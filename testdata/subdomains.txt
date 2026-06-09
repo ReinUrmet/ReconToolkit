@@ -1,0 +1,15 @@
+www
+mail
+smtp
+drive
+docs
+maps
+news
+calendar
+photos
+accounts
+play
+store
+thisdoesnotexist123
+nope-not-real-zzz
+asdfqwerty
