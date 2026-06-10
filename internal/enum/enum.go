@@ -3,27 +3,25 @@ package enum
 import (
 	"bufio"
 	"fmt"
-	"log"
+	"io"
 	"net"
-	"os"
 )
 
 // Peaksin kasutama LookupHost
-func BasicLookup(domain string) {
+func BasicLookup(domain string, wordlist io.Reader) {
 
-	subdomains, err := os.Open("testdata/subdomains.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	buf := bufio.NewScanner(subdomains)
+	buf := bufio.NewScanner(wordlist)
 
 	for buf.Scan() {
 		prefix := buf.Text()
 		subdomain := prefix + "." + domain
 		address, err := net.LookupHost(subdomain)
-		fmt.Println(address)
 		if err != nil {
-			fmt.Println(err)
+			continue
+		} else {
+			fmt.Println(subdomain)
+			fmt.Println(address)
+			fmt.Println()
 		}
 	}
 }
