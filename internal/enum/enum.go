@@ -14,10 +14,10 @@ func BasicLookup(domain string, wordlist io.Reader) {
 	wg := &sync.WaitGroup{}
 
 	for buf.Scan() {
+		prefix := buf.Text()
 		wg.Add(1)
-		go func() {
+		go func(prefix string) {
 			defer wg.Done()
-			prefix := buf.Text()
 			subdomain := prefix + "." + domain
 			address, err := net.LookupHost(subdomain)
 			if err != nil {
@@ -27,7 +27,7 @@ func BasicLookup(domain string, wordlist io.Reader) {
 				fmt.Println(address)
 				fmt.Println()
 			}
-		}()
+		}(prefix)
 	}
 	wg.Wait()
 }
