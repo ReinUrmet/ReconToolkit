@@ -5,15 +5,18 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"sync"
 )
 
-// Peaksin kasutama LookupHost
 func BasicLookup(domain string, wordlist io.Reader) {
 
 	buf := bufio.NewScanner(wordlist)
+	wg := &sync.WaitGroup{}
 
 	for buf.Scan() {
+		wg.Add(1)
 		go func() {
+			defer wg.Done()
 			prefix := buf.Text()
 			subdomain := prefix + "." + domain
 			address, err := net.LookupHost(subdomain)
@@ -26,4 +29,5 @@ func BasicLookup(domain string, wordlist io.Reader) {
 			}
 		}()
 	}
+	wg.Wait()
 }

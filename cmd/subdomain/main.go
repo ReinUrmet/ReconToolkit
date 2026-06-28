@@ -8,7 +8,7 @@ import (
 	"github.com/Reinurmet/recontoolkit/internal/enum"
 )
 
-// If i wanna run use: go run ./cmd/subdomain -domain google.com -wordlist_name testdata/subdomains.txt
+// If i wanna run use: go run ./cmd/subdomain -domain google.com -wordlistName testdata/subdomains.txt
 func main() {
 
 	// Define the flags
