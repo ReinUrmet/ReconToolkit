@@ -1,6 +1,9 @@
 package core
 
-import "strings"
+import (
+	"net"
+	"strings"
+)
 
 /*
 This function checks two things:
@@ -23,7 +26,19 @@ func InScope(host string, scope []string) bool {
 	return false
 }
 
-// This function is for when
+// This function is for checking if a single IP address fall within a range of IPs (in this case, 10.0.0.0 through 10.0.0.255)?
 func IPInScope(hostIp string, scope []string) bool {
-	return true
+	ip := net.ParseIP(hostIp)
+	if ip == nil {
+		return false
+	}
+	for _, entry := range scope {
+		_, ipnet, err := net.ParseCIDR(entry)
+		if err != nil {
+			continue
+		} else if ipnet.Contains(ip) {
+			return true
+		}
+	}
+	return false
 }
