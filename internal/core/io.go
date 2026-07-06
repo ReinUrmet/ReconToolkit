@@ -12,14 +12,12 @@ func PlainWriter(writer io.Writer, host Host) {
 	fmt.Fprintln(writer, host.Name)
 }
 
-//TODO
-//NDJSON writer buggy (prints stray <nil>)
-
 // for front end use later
-func NdjsonWriter(writer io.Writer, host Host) {
+func NdjsonWriter(writer io.Writer, host Host) error {
+
 	encoder := json.NewEncoder(writer)
 	jsonResult := encoder.Encode(host)
-	fmt.Fprintln(writer, jsonResult)
+	return jsonResult
 }
 
 //TODO
@@ -34,5 +32,6 @@ func TargetReader(input io.Reader) []Host {
 		line := buf.Text()
 		lines = append(lines, Host{Name: line})
 	}
+
 	return lines
 }
