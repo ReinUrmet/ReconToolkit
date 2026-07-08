@@ -3,6 +3,8 @@ package core
 import (
 	"net"
 	"strings"
+
+	"golang.org/x/net/idna"
 )
 
 /*
@@ -12,13 +14,32 @@ This function checks two things:
 */
 func InScope(host string, scope []string) bool {
 
+	host = strings.ToLower(host)
+	//Trailing dot filtering
+	host = strings.TrimSuffix(host, ".")
+	//Punycode fix (go get golang.org/x/net/idna)
+	host, err := idna.ToASCII(host)
+	if err != nil {
+		return false
+	}
+
 	for _, item := range scope {
-		if strings.ToLower(item) == strings.ToLower(host) {
+		item = strings.ToLower(item)
+		//Trailing dot filtering
+		item = strings.TrimSuffix(item, ".")
+		//Punycode fix for item aswell
+		item, err := idna.ToASCII(item)
+		if err != nil {
+			continue
+		}
+
+		if item == host {
 			return true
-		} else if strings.HasPrefix(strings.ToLower(item), "*.") {
+		} else if strings.HasPrefix(item, "*.") {
 			baseDomain := strings.TrimPrefix(item, "*.")
+			baseDomain = strings.ToLower(baseDomain)
 			//Checks if host is same as the ending and id host's length - basedomain's length is .
-			if strings.HasSuffix(strings.ToLower(host), strings.ToLower(baseDomain)) && len(host) > len(baseDomain) && host[len(host)-len(baseDomain)-1] == '.' {
+			if strings.HasSuffix(host, baseDomain) && len(host) > len(baseDomain) && host[len(host)-len(baseDomain)-1] == '.' {
 				return true
 			}
 		}
